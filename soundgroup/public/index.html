@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07080d">
+<title>SOUNDGROUP</title>
+<meta name="description" content="SOUNDGROUP — a local-first entertainment space for music, video, discovery and your personal media library.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="grain"></div>
+<div class="app-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="brand" data-view="home"><span class="brand-mark" aria-hidden="true">◈</span><span>SOUNDGROUP</span></div>
+  <button class="mobile-close icon-btn" id="mobile-close" aria-label="Close navigation">×</button>
+  <div class="nav-scroll">
+    <div class="nav-label">Explore</div>
+    <button class="nav-link active" data-view="home"><span class="ico">⌂</span><span>Home</span></button>
+    <button class="nav-link" data-view="discover"><span class="ico">✦</span><span>Discover</span><kbd>⌘K</kbd></button>
+    <button class="nav-link" data-view="music"><span class="ico">♫</span><span>Music</span></button>
+    <button class="nav-link" data-view="watch"><span class="ico">▶</span><span>Watch</span><span class="nav-badge">NEW</span></button>
+    <button class="nav-link" data-view="artists"><span class="ico">◎</span><span>Artists</span></button>
+    <div class="nav-label">Library</div>
+    <button class="nav-link" data-view="favorites"><span class="ico">♡</span><span>Favorites</span><span class="nav-count" id="fav-count">0</span></button>
+    <button class="nav-link" data-view="playlists"><span class="ico">☷</span><span>Playlists</span></button>
+    <button class="nav-link" data-view="history"><span class="ico">◷</span><span>History</span></button>
+    <button class="nav-link" data-view="media"><span class="ico">▦</span><span>My Media</span></button>
+    <div class="nav-label">Create</div>
+    <button class="nav-link" data-view="studio"><span class="ico">＋</span><span>Creator Studio</span></button>
+    <button class="nav-link" data-view="analytics"><span class="ico">⌁</span><span>Analytics</span></button>
+    <div class="nav-label">Account</div>
+    <button class="nav-link" data-view="account"><span class="ico">◯</span><span>Profile</span></button>
+    <button class="nav-link" data-view="settings"><span class="ico">⚙</span><span>Settings</span></button>
+    <a class="nav-link" id="admin-link" href="../admin/" hidden><span class="ico">◆</span><span>Admin Dashboard</span></a>
+  </div>
+  <div class="sidebar-bottom">
+    <button class="account-chip" id="profile-btn"><span class="avatar">S</span><span><strong id="side-name">Guest</strong><small>Personal room</small></span><b>›</b></button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <button class="icon-btn mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input id="search" placeholder="Search music, videos, artists, albums…" autocomplete="off">
+    <span class="search-shortcut">⌘ K</span>
+    <div class="search-dropdown" id="search-dropdown"></div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" id="command-btn" aria-label="Open search">⌘</button>
+    <button class="icon-btn notification" id="notify-btn" aria-label="Notifications">◌<span></span></button>
+    <button class="avatar top-avatar" id="top-profile">S</button>
+  </div>
+</header>
+
+<div class="views" id="views">
+<section class="view active" id="view-home">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow"><i></i> YOUR ENTERTAINMENT ROOM</span>
+      <h1>Stay awhile.<br><em>There is more to explore.</em></h1>
+      <p>SOUNDGROUP brings your music and videos together in one cinematic, personal space. Browse, listen, watch, save and come back where you left off.</p>
+      <div class="hero-actions"><button class="btn primary" data-view="discover">Explore SOUNDGROUP <span>→</span></button><button class="btn secondary" data-view="media">＋ Add your media</button></div>
+      <div class="hero-note"><span>LOCAL-FIRST</span> <span id="site-tagline">Your imported media is stored on your local SOUNDGROUP server. No remote media is required.</span></div>
+    </div>
+    <div class="hero-stage">
+      <div class="hero-poster poster-a"><span>SG</span><b>01</b></div>
+      <div class="hero-poster poster-b"><span>WATCH</span><b>02</b></div>
+      <div class="hero-poster poster-c"><span>LISTEN</span><b>03</b></div>
+      <div class="hero-orbit"></div>
+      <div class="hero-badge"><small>YOUR ROOM</small><strong id="hero-count">0 media</strong><span>Build it with your own files.</span></div>
+    </div>
+  </section>
+
+  <section class="section" id="home-continue-section">
+    <div class="section-head"><div><span class="section-kicker">PICK UP WHERE YOU LEFT OFF</span><h2>Continue</h2></div><button class="text-btn" data-view="history">View history →</button></div>
+    <div class="media-row" id="home-continue"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><span class="section-kicker">YOUR ROOM</span><h2>Built around you</h2></div></div>
+    <div class="experience-grid">
+      <button class="experience-card experience-discover" data-view="discover"><span class="experience-number">01</span><strong>Discover</strong><p>Turn your library into a place to wander, with collections and recommendations based on what you actually use.</p><span class="experience-link">Explore →</span></button>
+      <button class="experience-card experience-watch" data-view="watch"><span class="experience-number">02</span><strong>Watch</strong><p>A cinematic home for music videos, films, live sessions, interviews and your own imported video.</p><span class="experience-link">Open Watch →</span></button>
+      <button class="experience-card experience-listen" data-view="music"><span class="experience-number">03</span><strong>Listen</strong><p>Albums, artists, playlists and a compact player that supports the experience instead of taking it over.</p><span class="experience-link">Open Music →</span></button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><span class="section-kicker">RECENTLY ADDED</span><h2>Your newest media</h2></div><button class="text-btn" data-view="media">Manage media →</button></div>
+    <div class="media-row" id="home-recent"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><span class="section-kicker">EXPLORE BY FORMAT</span><h2>What are you in the mood for?</h2></div></div>
+    <section class="section site-info-section"><div class="section-head"><div><span class="section-kicker">ABOUT SOUNDGROUP</span><h2 id="site-about-title">A local-first entertainment room.</h2></div></div><div class="site-info-grid"><article class="setting-card"><h3 id="site-about">SOUNDGROUP brings music, video, discovery and personal media together in one local-first experience.</h3></article><article class="setting-card"><span class="section-kicker">CONTACT</span><p id="site-contact">Use the administrator contact details configured for this installation.</p></article></div></section><div class="format-grid">
+      <button class="format-card music" data-view="music"><span>♫</span><strong>Music</strong><small>Albums, songs & playlists</small></button>
+      <button class="format-card video" data-view="watch"><span>▶</span><strong>Watch</strong><small>Video & visual stories</small></button>
+      <button class="format-card people" data-view="artists"><span>◎</span><strong>Artists</strong><small>People behind the work</small></button>
+      <button class="format-card library" data-view="media"><span>▦</span><strong>My Media</strong><small>Everything you imported</small></button>
+    </div>
+  </section>
+</section>
+
+<section class="view" id="view-discover">
+  <div class="page-heading"><div><span class="section-kicker">SOUNDGROUP CATALOG</span><h1>Discover</h1><p>Official SOUNDGROUP releases, curated and published from the admin catalog.</p></div><button class="btn secondary small" id="surprise-btn">Surprise me →</button></div>
+  <div class="discover-hero"><div><span class="pill">OFFICIAL SOUNDGROUP</span><h2 id="discover-title">Discover the official SOUNDGROUP catalog.</h2><p id="discover-copy">Music and videos published by the SOUNDGROUP admin appear here.</p><div class="discover-hero-meta"><span id="discover-count">0 releases</span><span>Official catalog</span></div></div><div class="discover-art"><span>SG</span></div></div>
+
+  <div class="discover-tabs" id="discover-tabs" role="tablist" aria-label="Discover content type">
+    <button class="discover-tab active" type="button" role="tab" aria-selected="true" data-discover-tab="all">All</button>
+    <button class="discover-tab" type="button" role="tab" aria-selected="false" data-discover-tab="music">Music</button>
+    <button class="discover-tab" type="button" role="tab" aria-selected="false" data-discover-tab="videos">Videos</button>
+  </div>
+
+  <div id="discover-all-view" class="discover-mode active" data-discover-mode="all">
+    <section class="section"><div class="section-head"><div><span class="section-kicker">FEATURED</span><h2>What to discover</h2></div></div><div class="media-row" id="discover-all-featured"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">TRENDING MUSIC</span><h2>Music people are returning to</h2></div></div><div class="explore-grid" id="discover-all-trending-music"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">TRENDING VIDEOS</span><h2>Watch-worthy right now</h2></div></div><div class="video-grid" id="discover-all-trending-videos"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">NEW MUSIC</span><h2>Latest releases</h2></div></div><div class="explore-grid" id="discover-all-new-music"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">LATEST VIDEOS</span><h2>Fresh from SOUNDGROUP</h2></div></div><div class="video-grid" id="discover-all-latest-videos"></div></section>
+  </div>
+
+  <div id="discover-music-view" class="discover-mode" data-discover-mode="music" hidden>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">FEATURED MUSIC</span><h2>SOUNDGROUP Music</h2></div></div><div class="media-row" id="discover-music-featured"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">TRENDING</span><h2>Music in motion</h2></div></div><div class="explore-grid" id="discover-music-trending"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">NEW RELEASES</span><h2>Recently published</h2></div></div><div class="explore-grid" id="discover-music-new"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">BROWSE BY GENRE</span><h2>Find a sound</h2></div></div><div class="mood-grid discover-genre-grid" id="discover-music-genres"></div></section>
+  </div>
+
+  <div id="discover-video-view" class="discover-mode" data-discover-mode="videos" hidden>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">FEATURED VIDEOS</span><h2>SOUNDGROUP Watch</h2></div></div><div class="video-grid" id="discover-video-featured"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">TRENDING</span><h2>Watch-worthy right now</h2></div></div><div class="video-grid" id="discover-video-trending"></div></section>
+    <section class="section"><div class="section-head"><div><span class="section-kicker">LATEST</span><h2>Newly published videos</h2></div></div><div class="video-grid" id="discover-video-latest"></div></section>
+  </div>
+</section>
+
+<section class="view" id="view-music">
+  <div class="page-heading"><div><span class="section-kicker">MUSIC</span><h1>Listen</h1><p>Your music library and the SOUNDGROUP catalog, presented like a destination — not a file browser.</p></div><button class="btn primary small" data-view="media">＋ Add music</button></div>
+  <div class="music-spotlight"><div><span class="pill">YOUR LIBRARY</span><h2 id="music-headline">Bring the soundtrack with you.</h2><p id="music-subline">Import audio files and let SOUNDGROUP organize the experience around albums, artists, genres and playlists.</p></div><div class="music-stat"><strong id="music-count">0</strong><small>tracks in your room</small></div></div>
+  <div class="filter-pills" id="music-filters"></div><div class="catalog-filters"><select id="music-year-filter"><option value="all">All years</option></select><select id="music-language-filter"><option value="all">All languages</option></select></div>
+  <div class="section"><div class="section-head"><div><span class="section-kicker">ALL MUSIC</span><h2>Library</h2></div><div class="sort-row"><select id="music-sort"><option value="recent">Recently added</option><option value="title">Title</option><option value="artist">Artist</option><option value="duration">Duration</option></select></div></div><div class="explore-grid" id="music-grid"></div></div>
+</section>
+
+<section class="view" id="view-watch">
+  <div class="page-heading"><div><span class="section-kicker">SOUNDGROUP WATCH</span><h1>Watch</h1><p>A proper destination for video — cinematic browsing, continue watching and your own local collection.</p></div><button class="btn primary small" data-view="media">＋ Add video</button></div>
+  <div class="watch-hero">
+    <div class="watch-hero-art"><div class="scan"></div><span>SOUNDGROUP<br><b>WATCH</b></span></div>
+    <div class="watch-hero-copy"><span class="pill">YOUR VIDEO LIBRARY</span><h2>Make room for moving images.</h2><p>Import your own videos and build a watch experience with progress, playlists, queue and recommendations.</p><div class="hero-actions"><button class="btn primary small" data-view="media">Import video →</button><button class="btn secondary small" id="watch-random">Play something</button></div></div>
+  </div>
+  <div class="section" id="continue-watch-section"><div class="section-head"><div><span class="section-kicker">PICK UP WHERE YOU LEFT OFF</span><h2>Continue watching</h2></div></div><div class="media-row" id="continue-watch-row"></div></div>
+  <div class="section"><div class="section-head"><div><span class="section-kicker">YOUR COLLECTION</span><h2>Browse video</h2></div><div class="filter-pills compact" id="video-filters"></div><div class="catalog-filters"><select id="video-year-filter"><option value="all">All years</option></select><select id="video-language-filter"><option value="all">All languages</option></select></div></div><div class="video-grid" id="video-grid"></div></div>
+</section>
+
+<section class="view" id="view-artists"><div class="page-heading"><div><span class="section-kicker">PEOPLE & CREATORS</span><h1>Artists</h1><p>Explore the people attached to your imported music and videos.</p></div></div><div class="artist-grid" id="artist-grid"></div></section>
+
+
+<section class="view" id="view-favorites"><div class="page-heading"><div><span class="section-kicker">YOUR LIBRARY</span><h1>Favorites</h1><p>The things you chose to keep close.</p></div></div><div class="explore-grid" id="favorites-grid"></div></section>
+
+<section class="view" id="view-playlists"><div class="page-heading"><div><span class="section-kicker">YOUR COLLECTIONS</span><h1>Playlists</h1><p>Build rooms for different moods, projects and moments.</p></div><button class="btn primary small" id="new-playlist">＋ New playlist</button></div><div class="playlist-grid" id="playlist-grid"></div></section>
+
+<section class="view" id="view-history"><div class="page-heading"><div><span class="section-kicker">RECENT</span><h1>History</h1><p>Continue listening and watching from where you stopped.</p></div></div><div class="explore-grid" id="history-grid"></div></section>
+
+<section class="view" id="view-media">
+  <div class="page-heading"><div><span class="section-kicker">YOUR LOCAL LIBRARY</span><h1>My Media</h1><p>Add your own files. SOUNDGROUP uploads them to your XAMPP/PHP media vault and stores their metadata in MySQL.</p></div><div class="storage-pill"><strong id="storage-count">0</strong><span>items</span><i></i><strong id="storage-size">0 B</strong></div></div>
+  <div class="import-shell" id="import-shell">
+    <div class="import-main">
+      <div class="drop-zone" id="drop-zone" tabindex="0">
+        <div class="drop-icon">↓</div><span class="pill">LOCAL IMPORT</span><h2>Drop your media here.</h2><p>Audio, video, or any other file you want SOUNDGROUP to remember. Multiple files are supported.</p>
+        <div class="drop-actions"><button class="btn primary" id="browse-files">Choose files</button><button class="btn secondary" id="browse-folder">Choose folder</button></div>
+        <small>Files are uploaded to the local SOUNDGROUP server. Unsupported playback formats can still be identified.</small>
+        <input id="file-input" type="file" multiple hidden>
+        <input id="folder-input" type="file" webkitdirectory directory multiple hidden>
+      </div>
+      <div class="import-queue hidden" id="import-queue"><div class="queue-head"><div><span class="section-kicker">IMPORT QUEUE</span><h3>Adding media</h3></div><span id="import-progress-label">0 / 0</span></div><div class="import-progress"><i id="import-progress"></i></div><div id="import-list"></div></div>
+    </div>
+    <aside class="import-aside">
+      <span class="section-kicker">MEDIA VAULT</span><h3>Your files, your room.</h3><p>The server can host your own licensed media and published SOUNDGROUP catalog items.</p>
+      <div class="vault-stat"><span>Audio</span><strong id="vault-audio">0</strong></div><div class="vault-stat"><span>Video</span><strong id="vault-video">0</strong></div><div class="vault-stat"><span>Other</span><strong id="vault-other">0</strong></div>
+      <button class="btn secondary full" id="clear-media">Clear library</button>
+    </aside>
+  </div>
+  <div class="section"><div class="section-head"><div><span class="section-kicker">RECENTLY IMPORTED</span><h2>Media library</h2></div><div class="filter-pills compact" id="media-filters"></div></div><div class="explore-grid" id="media-grid"></div></div>
+</section>
+
+<section class="view" id="view-studio"><div class="page-heading"><div><span class="section-kicker">CREATOR STUDIO</span><h1>Make your room yours.</h1><p>Manage imported releases, edit metadata and prepare your own collections.</p></div><button class="btn primary small" data-view="media">＋ Import media</button></div><div class="studio-grid"><div class="studio-card featured"><span class="section-kicker">WORKFLOW</span><h2>Import → shape → publish.</h2><p>Use My Media to bring files into the local SOUNDGROUP server, then edit titles, creators, categories and artwork.</p><div class="workflow"><span>01 Import</span><span>02 Edit</span><span>03 Organize</span></div><button class="btn secondary small" data-view="media">Open My Media →</button></div><div class="studio-card"><span class="section-kicker">LIBRARY HEALTH</span><h2 id="studio-media-count">0 items</h2><p id="studio-media-copy">Your creator room is ready for its first upload.</p><div class="mini-bars" id="studio-bars"></div></div></div></section>
+
+<section class="view" id="view-analytics"><div class="page-heading"><div><span class="section-kicker">YOUR ACTIVITY</span><h1>Analytics</h1><p>Local account activity from this SOUNDGROUP installation — not fabricated global popularity.</p></div></div><div class="stats-row" id="analytics-stats"></div><div class="setting-card"><span class="section-kicker">ACTIVITY</span><h2>Your week</h2><div class="bars large" id="activity-bars"></div></div></section>
+
+<section class="view" id="view-account"><div class="page-heading"><div><span class="section-kicker">ACCOUNT</span><h1>Your SOUNDGROUP</h1><p>Personalize your room and keep your library close. Your account data is saved by the SOUNDGROUP backend.</p></div><button class="btn secondary small" id="auth-open">Log in / Sign up</button></div><div class="account-layout"><div class="profile-card"><div class="profile-avatar">S</div><h2 id="account-name">Guest</h2><p>Personal SOUNDGROUP room</p><button class="btn primary small" data-view="media">Build your library</button></div><div class="setting-card"><span class="section-kicker">YOUR SPACE</span><h2>A room that grows with you.</h2><p>Favorites, playlists, history and playback state are connected to your SOUNDGROUP account.</p><div class="account-links"><button data-view="favorites">Favorites →</button><button data-view="playlists">Playlists →</button><button data-view="history">History →</button><button data-view="settings">Settings →</button></div></div></div></section>
+
+<section class="view" id="view-settings">
+  <div class="page-heading"><div><span class="section-kicker">SYSTEM</span><h1>Settings</h1><p>Changes apply live. Nothing should fire unless you actually change it.</p></div></div>
+  <div class="settings-grid">
+    <div class="setting-card wide"><div class="setting-title"><div class="setting-icon">✦</div><div><h3>Atmosphere</h3><p>Choose the mood of SOUNDGROUP.</p></div></div><div class="theme-selector" id="theme-selector"></div><div class="setting-item"><div><strong>Accent color</strong><small>Customize active states</small></div><input class="color-input" type="color" id="accent-color"></div><div class="setting-item"><div><strong>Glass intensity</strong><small>Control blur and surface depth</small></div><select id="glass-intensity"><option value="minimal">Minimal</option><option value="balanced">Balanced</option><option value="rich">Rich</option><option value="ultra">Ultra</option></select></div><div class="setting-item"><div><strong>Interface density</strong><small>Compact is the default</small></div><select id="density-select"><option value="compact">Compact</option><option value="comfortable">Comfortable</option><option value="spacious">Spacious</option></select></div></div>
+    <div class="setting-card"><div class="setting-title"><div class="setting-icon">▶</div><div><h3>Playback</h3><p>Live player behavior.</p></div></div><div class="setting-item"><div><strong>Autoplay</strong><small>Continue through a queue</small></div><label class="switch"><input id="autoplay-toggle" type="checkbox" checked><span></span></label></div><div class="setting-item"><div><strong>Motion</strong><small>Ambient and hover motion</small></div><label class="switch"><input id="motion-toggle" type="checkbox" checked><span></span></label></div><div class="setting-item"><div><strong>High contrast</strong><small>Increase surface contrast</small></div><label class="switch"><input id="contrast-toggle" type="checkbox"><span></span></label></div><label class="select-label">Playback speed<select id="speed-select"><option value="1">1×</option><option value=".75">0.75×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div>
+    <div class="setting-card wide"><div class="setting-title"><div class="setting-icon">⌁</div><div><h3>Timeline personality</h3><p>Keep progress subtle, tactile and readable.</p></div></div><div class="progress-style-grid" id="progress-style-grid"></div><div class="range-row"><label>Intensity<input id="progress-intensity" type="range" min="0" max="100" value="60"></label><label>Speed<input id="progress-speed" type="range" min="20" max="180" value="100"></label><label>Glow<input id="progress-glow" type="range" min="0" max="100" value="55"></label></div></div>
+    <div class="setting-card"><div class="setting-title"><div class="setting-icon">≈</div><div><h3>Visualizer</h3><p>Full player atmosphere.</p></div></div><label class="select-label">Mode<select id="visualizer-select"><option value="bars">Spectrum</option><option value="wave">Wave</option><option value="orb">Orb</option><option value="minimal">Minimal</option></select></label><div class="setting-item"><div><strong>Reduce motion</strong><small>Respect accessibility preferences</small></div><label class="switch"><input id="reduce-motion" type="checkbox"><span></span></label></div></div><div class="setting-card wide"><div class="setting-title"><div class="setting-icon">EQ</div><div><h3>Professional Equalizer</h3><p>Shape the actual audio signal with a 10-band Web Audio EQ.</p></div></div><div class="eq-settings"><label class="select-label">Preset<select id="eq-settings-preset"><option value="Custom">Custom</option><option>Flat</option><option>Bass Boost</option><option>Bass Reducer</option><option>Vocal</option><option>Acoustic</option><option>Classical</option><option>Electronic</option><option>Hip-Hop</option><option>Rock</option><option>Pop</option><option>R&B</option><option>Jazz</option><option>Cinematic</option><option>Night</option><option>Loudness</option></select></label><label class="select-label">EQ<select id="eq-settings-enabled"><option value="on">On</option><option value="off">Bypass</option></select></label></div><div class="eq-bands settings-eq" id="settings-eq-bands"></div></div>
+    <div class="setting-card"><div class="setting-title"><div class="setting-icon">▣</div><div><h3>Storage</h3><p>Manage your server media vault.</p></div></div><div class="setting-item"><div><strong>Library</strong><small id="settings-storage">0 items</small></div><button class="text-btn" data-view="media">Manage →</button></div><div class="setting-item"><div><strong>Persistence</strong><small>MySQL server storage</small></div><span class="status-badge"><i></i> Active</span></div></div>
+  </div>
+</section>
+</div>
+</main>
+</div>
+
+<audio id="audio-engine" preload="metadata"></audio>
+<div class="player" id="player">
+  <div class="player-track"><div class="cover-wrap" id="player-cover"><span>♫</span></div><div class="track-meta"><strong id="player-title">Nothing playing</strong><small id="player-artist">Choose something to listen to</small><span class="player-tech" id="player-tech">Local media</span></div><button class="heart-player" id="heart-player" aria-label="Favorite">♡</button></div>
+  <div class="player-center"><div class="controls"><button class="ctrl" id="prev-btn" aria-label="Previous">◀</button><button class="play-main" id="master-play" aria-label="Play/Pause">▶</button><button class="ctrl" id="next-btn" aria-label="Next">▶</button></div><div class="timeline"><span id="curr-time">0:00</span><div class="track-bar" id="track-bar" role="slider" tabindex="0" aria-label="Audio playback position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00"><span id="track-fill"></span><b id="track-knob"></b></div><span id="tot-time">0:00</span></div></div>
+  <div class="player-tools"><button class="ctrl" id="queue-btn" aria-label="Queue">☷</button><button class="ctrl volume-button" id="volume-toggle" aria-label="Mute">⌁</button><input class="vol-bar" id="volume" type="range" min="0" max="1" step=".01" value=".8"><button class="icon-btn" id="player-expand" aria-label="Open full player">↗</button></div>
+</div>
+
+<div class="video-player-modal overlay-modal" id="video-modal">
+  <div class="video-player-card">
+    <button class="modal-close icon-btn" id="video-close" aria-label="Close video">×</button>
+    <div class="video-stage" id="video-stage"><video id="video-player" playsinline preload="metadata"></video><div class="video-title-overlay"><span id="vgenre">VIDEO</span><strong id="vtitle">—</strong><small id="vartist">—</small></div>
+      <div class="video-error" id="video-error"><strong>Video unavailable</strong><span id="video-error-copy">This format may not be supported by the browser.</span><button class="btn secondary small" id="video-retry">Retry</button></div>
+      <div class="video-controls" id="video-controls"><button id="vprev" class="ctrl" aria-label="Previous video">◀</button><button id="vplay" class="ctrl" aria-label="Play">▶</button><button id="vnext" class="ctrl" aria-label="Next video">▶</button><span id="vtime">0:00 / 0:00</span><div class="video-seek" id="video-seek"><span id="vfill"></span></div><button id="vmute" class="ctrl" aria-label="Mute">⌁</button><button id="vquality" class="ctrl" aria-label="Video quality">AUTO</button><button id="vpip" class="ctrl" aria-label="Picture in picture">PiP</button><button id="vspeed" class="ctrl" aria-label="Playback speed">1×</button><button id="vtheater" class="ctrl" aria-label="Theater mode">THEATER</button><button id="vfull" class="ctrl" aria-label="Fullscreen">⛶</button></div>
+    </div>
+    <div class="video-meta"><div><span class="section-kicker">NOW WATCHING</span><h2 id="vmeta-title">—</h2><p id="vmeta-desc">—</p></div><div class="video-actions"><button class="btn secondary small" id="vfav">♡ Favorite</button><button class="btn secondary small" id="vqueue">＋ Queue</button></div></div>
+  </div>
+</div>
+
+<div class="full-player overlay-modal" id="full-player"><button class="full-close icon-btn" id="full-close" aria-label="Close full player">×</button><div class="full-player-bg"></div><div class="full-player-grid"><div class="full-art-wrap" id="full-art"></div><div class="full-copy"><span class="section-kicker">IMMERSIVE LISTENING</span><h1 id="full-title">SOUNDGROUP</h1><h3 id="full-artist">Your local library</h3><p id="full-desc">Choose a track to begin.</p><div class="full-actions"><button class="btn primary" id="full-play">Play</button><button class="btn secondary" id="full-favorite">♡ Favorite</button><button class="btn secondary" id="eq-open">EQ</button></div><div class="full-timeline"><span id="full-curr-time">0:00</span><div class="track-bar full-track-bar" id="full-track-bar" role="slider" tabindex="0" aria-label="Full player audio playback position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00"><span id="full-track-fill"></span><b id="full-track-knob"></b></div><span id="full-tot-time">0:00</span></div><div class="visualizer" id="visualizer"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="eq-panel" id="eq-panel"><div class="eq-head"><div><span class="section-kicker">PRO AUDIO</span><h3>10-Band Equalizer</h3></div><label class="eq-toggle"><input id="eq-enabled" type="checkbox" checked><span></span> EQ</label></div><div class="eq-presets"><select id="eq-preset"><option value="Custom">Custom</option><option>Flat</option><option>Bass Boost</option><option>Bass Reducer</option><option>Vocal</option><option>Acoustic</option><option>Classical</option><option>Electronic</option><option>Hip-Hop</option><option>Rock</option><option>Pop</option><option>R&B</option><option>Jazz</option><option>Cinematic</option><option>Night</option><option>Loudness</option></select><button class="text-btn" id="eq-reset">Reset</button></div><div class="eq-bands" id="eq-bands"></div></div></div></div></div>
+
+<div class="auth-modal overlay-modal" id="auth-modal"><div class="auth-card"><button class="modal-close icon-btn" id="auth-close">×</button><div class="auth-art"><span>SOUNDGROUP</span><strong>Make the room yours.</strong></div><div class="auth-panel"><div class="auth-tabs"><button class="active" data-auth="login">Log in</button><button data-auth="register">Create account</button></div><div id="auth-login"><span class="section-kicker">WELCOME BACK</span><h2>Return to your room.</h2><label>Email<input id="login-email" type="email" placeholder="you@example.com"></label><label>Password<input id="login-password" type="password" placeholder="••••••••"></label><button class="btn primary full" id="login-submit">Log in</button><button class="text-btn guest-login" id="guest-login">Continue as guest</button></div><div id="auth-register" class="hidden"><span class="section-kicker">NEW HERE?</span><h2>Build your SOUNDGROUP.</h2><label>Name<input id="reg-name" placeholder="Your name" autocomplete="name"></label><label>Phone<input id="reg-phone" type="tel" placeholder="Your phone number" autocomplete="tel"></label><label>Address<input id="reg-address" placeholder="Your address" autocomplete="street-address"></label><label>Email<input id="reg-email" type="email" placeholder="you@example.com" autocomplete="email"></label><label>Password<input id="reg-password" type="password" placeholder="At least 6 characters" autocomplete="new-password"></label><div class="strength"><span id="strength-fill"></span></div><label class="terms"><input id="terms" type="checkbox"> I agree to the demo terms.</label><button class="btn primary full" id="register-submit">Create account</button></div></div></div></div>
+
+<div class="queue-panel" id="queue-panel"><div class="queue-head"><div><span class="section-kicker">UP NEXT</span><h3>Queue</h3></div><button class="icon-btn" id="queue-close">×</button></div><div id="queue-list"></div></div>
+<div class="command-overlay" id="command-overlay"><div class="command-box"><div class="command-search"><span>⌕</span><input id="command-input" placeholder="Search SOUNDGROUP…"><kbd>ESC</kbd></div><div id="command-list"></div></div></div>
+<div class="notification-panel" id="notifications"><div class="notification-head"><div><span class="section-kicker">SOUNDGROUP CENTER</span><h3>Notifications</h3></div><button class="icon-btn" id="notification-close">×</button></div><div class="notification-item"><span>✦</span><div><strong>Your room is ready</strong><p>Import your own music and videos from My Media.</p><small>Now</small></div></div></div>
+<div class="overlay-modal" id="playlist-modal"><div class="modal-card"><button class="modal-close icon-btn" id="playlist-close">×</button><span class="section-kicker">NEW COLLECTION</span><h2>Create a playlist</h2><label>Playlist name<input id="playlist-name" maxlength="180" placeholder="Late night"></label><button class="btn primary full" id="playlist-create">Create</button></div></div>
+<div class="overlay-modal" id="playlist-detail-modal"><div class="modal-card wide-modal playlist-detail-modal-card"><button class="modal-close icon-btn" id="playlist-detail-close">×</button><div class="playlist-detail-head"><div><span class="section-kicker">PLAYLIST</span><h2 id="playlist-detail-title">Playlist</h2><p id="playlist-detail-meta">0 items</p></div><div class="hero-actions compact-actions"><button class="btn secondary small" id="playlist-play-all">Play all</button><button class="btn secondary small" id="playlist-rename">Rename</button><button class="btn primary small" id="playlist-add-track">＋ Add music</button></div></div><div class="playlist-track-list" id="playlist-track-list"></div></div></div>
+<div class="overlay-modal" id="playlist-picker-modal"><div class="modal-card wide-modal playlist-picker-modal-card"><button class="modal-close icon-btn" id="playlist-picker-close">×</button><span class="section-kicker" id="playlist-picker-kicker">ADD MUSIC</span><h2 id="playlist-picker-title">Choose music</h2><div class="playlist-picker-toolbar" id="playlist-picker-toolbar" hidden><label class="playlist-picker-select-all"><input type="checkbox" id="playlist-picker-select-all"><span>Select all</span></label><button type="button" class="btn primary small" id="playlist-picker-add-selected" disabled>Add selected</button></div><div class="playlist-picker-list" id="playlist-picker-list"></div></div></div>
+<div class="overlay-modal" id="media-detail-modal" aria-hidden="true"><div class="modal-card wide-modal"><button class="modal-close icon-btn" id="media-detail-close">×</button><div id="media-detail-content"></div></div></div><div class="overlay-modal" id="edit-media-modal"><div class="modal-card wide-modal"><button class="modal-close icon-btn" id="edit-media-close">×</button><span class="section-kicker">MEDIA DETAILS</span><h2>Edit media</h2><div id="edit-media-preview"></div><div class="form-grid"><label>Title<input id="edit-title"></label><label>Creator / Artist<input id="edit-artist"></label><label>Album / Collection<input id="edit-album"></label><label>Genre / Category<input id="edit-genre"></label><label>Release year<input id="edit-year" inputmode="numeric" maxlength="4" placeholder="2026"></label><label>Language<input id="edit-language" maxlength="80" placeholder="English"></label><label class="full-field">Description<textarea id="edit-description" rows="4"></textarea></label></div><button class="btn primary full" id="edit-save">Save changes</button></div></div>
+<div id="toast-container"></div>
+<script src="app.js"></script>
+</body>
+</html>
