@@ -1,0 +1,17 @@
+add stling in css style.css class .discover-tabs line 1143 to 1172
+ * style.css line comment 251 to 257 and add line 260 to 272
+*public style.css class html[data-theme="obsidian"] line no84 to 88 and 107 756 color change
+
+admin.css mai line no 922 add and line no 924 to 929 new add
+
+seting.php mai line no 59 ya 60 hai es mai class "admin-select"lagya hai  <select id="category-type" class="admin-select">
+
+.admin-avatar 229 pr black
+
+vedios.php line no 114,118,122 class="admin-select" add kia hai
+
+media.php line no 115,119,123 add class
+
+app.js pr line 1134 ya 1135 hai es ko comment kia hai toast('Logged in') } catch (e) { toast(e.message) } });  or ye add kia hai  toast('Logged in'); setTimeout(() => location.reload(), 800); } catch (e) { toast(e.message) }
+
+ab refresh krne ke zarorat nhi login and Create account pr ye app.js mai shi kia hai

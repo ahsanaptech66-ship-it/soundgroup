@@ -1,3 +1,107 @@
 <?php
-declare(strict_types=1);require_once __DIR__.'/includes/guard.php';$user=require_admin_page();$csrf=csrf_token('admin_csrf');
-?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SOUNDGROUP — User Management</title><link rel="stylesheet" href="assets/admin.css"></head><body class="admin-body"><div class="admin-app" data-admin-csrf="<?=htmlspecialchars($csrf,ENT_QUOTES,'UTF-8')?>"><aside class="admin-sidebar" id="admin-sidebar"><div class="admin-sidebar-top"><a href="index.php" class="admin-brand"><span class="admin-brand-mark">◈</span><span>SOUNDGROUP</span><em>ADMIN</em></a><button class="admin-icon-btn admin-mobile-close" id="admin-sidebar-close">×</button></div><nav class="admin-nav"><span class="admin-nav-label">Workspace</span><a class="admin-nav-link" href="index.php"><span>⌂</span>Overview</a><a class="admin-nav-link" href="analytics.php"><span>⌁</span>Analytics</a><span class="admin-nav-label">Content</span><a class="admin-nav-link" href="media.php"><span>♫</span>Add Music</a><a class="admin-nav-link" href="videos.php"><span>▶</span>Add Video</a><a class="admin-nav-link" href="playlists.php"><span>☷</span>Playlists</a><a class="admin-nav-link" href="reviews.php"><span>☆</span>Reviews</a><span class="admin-nav-label">Platform</span><a class="admin-nav-link" href="user-uploads.php"><span>◎</span>User Monitoring</a><a class="admin-nav-link" href="users.php"><span>◉</span>Users</a><a class="admin-nav-link" href="settings.php"><span>⚙</span>Website & Catalog</a></nav><div class="admin-sidebar-bottom"><div class="admin-user-mini"><span class="admin-avatar"><?=htmlspecialchars(strtoupper(substr($user['name'],0,1)),ENT_QUOTES,'UTF-8')?></span><div><strong><?=htmlspecialchars($user['name'],ENT_QUOTES,'UTF-8')?></strong><small>Administrator</small></div></div><button class="admin-logout-btn" id="admin-logout">Log out <span>↗</span></button></div></aside><div class="admin-main-wrap"><header class="admin-topbar"><div class="admin-topbar-left"><button class="admin-icon-btn admin-mobile-menu" id="admin-sidebar-open">☰</button><div><span class="eyebrow">PEOPLE</span><h2>User Management</h2></div></div><div class="admin-topbar-actions"><button class="admin-btn admin-btn-ghost" id="users-refresh">Refresh <span>↻</span></button><a class="admin-btn admin-btn-ghost" href="../public/">View site <span>↗</span></a></div></header><main class="admin-main"><section class="admin-welcome"><div><span class="eyebrow">PHASE 7</span><h1>Manage SOUNDGROUP accounts.</h1><p>Review users, roles and account status without touching their personal media unless a user is explicitly removed.</p></div></section><section class="admin-panel glass-card"><div class="admin-panel-head"><div><span class="eyebrow">DIRECTORY</span><h2>Users</h2></div><div class="admin-toolbar"><div class="admin-search-field"><span>⌕</span><input id="users-search" type="search" placeholder="Search name, email, phone…"></div><select id="users-role" class="admin-select"><option value="all">All roles</option><option value="user">Users</option><option value="admin">Admins</option></select><select id="users-status" class="admin-select"><option value="all">All status</option><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>User</th><th>Contact</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody id="users-table-body"><tr><td colspan="6" class="admin-empty">Loading users…</td></tr></tbody></table></div></section></main></div></div><div class="admin-modal" id="user-edit-modal" aria-hidden="true"><div class="admin-modal-card"><div class="admin-panel-head"><div><span class="eyebrow">USER</span><h2>Edit user</h2></div><button class="admin-icon-btn" id="user-modal-close">×</button></div><form id="user-edit-form" class="admin-form"><input id="user-id" type="hidden"><label class="admin-field"><span>Name</span><input id="user-name" maxlength="120" required></label><label class="admin-field"><span>Email</span><input id="user-email" type="email" maxlength="190" required></label><label class="admin-field"><span>Phone</span><input id="user-phone" maxlength="40"></label><label class="admin-field"><span>Address</span><input id="user-address" maxlength="255"></label><label class="admin-field"><span>Role</span><select id="user-role"><option value="user">User</option><option value="admin">Administrator</option></select></label><label class="admin-field"><span>Status</span><select id="user-active"><option value="1">Active</option><option value="0">Inactive</option></select></label><div class="admin-upload-actions admin-field-wide"><button type="button" class="admin-btn admin-btn-ghost" id="user-modal-cancel">Cancel</button><button class="admin-btn admin-btn-primary">Save user</button></div></form></div></div><div class="admin-toast" id="admin-toast"></div><script src="assets/admin-users.js" defer></script></body></html>
+
+declare(strict_types=1);
+require_once __DIR__ . '/includes/guard.php';
+$user = require_admin_page();
+$csrf = csrf_token('admin_csrf');
+?>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SOUNDGROUP — User Management</title>
+    <link rel="stylesheet" href="assets/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-app" data-admin-csrf="<?= htmlspecialchars($csrf, ENT_QUOTES, 'UTF-8') ?>">
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="admin-sidebar-top"><a href="index.php" class="admin-brand"><span class="admin-brand-mark">◈</span><span>SOUNDGROUP</span><em>ADMIN</em></a><button class="admin-icon-btn admin-mobile-close" id="admin-sidebar-close">×</button></div>
+            <nav class="admin-nav"><span class="admin-nav-label">Workspace</span><a class="admin-nav-link" href="index.php"><span>⌂</span>Overview</a><a class="admin-nav-link" href="analytics.php"><span>⌁</span>Analytics</a><span class="admin-nav-label">Content</span><a class="admin-nav-link" href="media.php"><span>♫</span>Add Music</a><a class="admin-nav-link" href="videos.php"><span>▶</span>Add Video</a><a class="admin-nav-link" href="playlists.php"><span>☷</span>Playlists</a><a class="admin-nav-link" href="reviews.php"><span>☆</span>Reviews</a><span class="admin-nav-label">Platform</span><a class="admin-nav-link" href="user-uploads.php"><span>◎</span>User Monitoring</a><a class="admin-nav-link" href="users.php"><span>◉</span>Users</a><a class="admin-nav-link" href="settings.php"><span>⚙</span>Website & Catalog</a></nav>
+            <div class="admin-sidebar-bottom">
+                <div class="admin-user-mini"><span class="admin-avatar"><?= htmlspecialchars(strtoupper(substr($user['name'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></span>
+                    <div><strong><?= htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8') ?></strong><small>Administrator</small></div>
+                </div><button class="admin-logout-btn" id="admin-logout">Log out <span>↗</span></button>
+            </div>
+        </aside>
+        <div class="admin-main-wrap">
+            <header class="admin-topbar">
+                <div class="admin-topbar-left"><button class="admin-icon-btn admin-mobile-menu" id="admin-sidebar-open">☰</button>
+                    <div><span class="eyebrow">PEOPLE</span>
+                        <h2>User Management</h2>
+                    </div>
+                </div>
+                <div class="admin-topbar-actions"><button class="admin-btn admin-btn-ghost" id="users-refresh">Refresh <span>↻</span></button><a class="admin-btn admin-btn-ghost" href="../public/">View site <span>↗</span></a></div>
+            </header>
+            <main class="admin-main">
+                <section class="admin-welcome">
+                    <div><span class="eyebrow">PHASE 7</span>
+                        <h1>Manage SOUNDGROUP accounts.</h1>
+                        <p>Review users, roles and account status without touching their personal media unless a user is explicitly removed.</p>
+                    </div>
+                </section>
+                <section class="admin-panel glass-card">
+                    <div class="admin-panel-head">
+                        <div><span class="eyebrow">DIRECTORY</span>
+                            <h2>Users</h2>
+                        </div>
+                        <div class="admin-toolbar">
+                            <div class="admin-search-field"><span>⌕</span><input id="users-search" type="search" placeholder="Search name, email, phone…"></div><select id="users-role" class="admin-select">
+                                <option value="all">All roles</option>
+                                <option value="user">Users</option>
+                                <option value="admin">Admins</option>
+                            </select><select id="users-status" class="admin-select">
+                                <option value="all">All status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Contact</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <tr>
+                                    <td colspan="6" class="admin-empty">Loading users…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <div class="admin-modal" id="user-edit-modal" aria-hidden="true">
+        <div class="admin-modal-card">
+            <div class="admin-panel-head">
+                <div><span class="eyebrow">USER</span>
+                    <h2>Edit user</h2>
+                </div><button class="admin-icon-btn" id="user-modal-close">×</button>
+            </div>
+            <form id="user-edit-form" class="admin-form"><input id="user-id" type="hidden"><label class="admin-field"><span>Name</span><input id="user-name" maxlength="120" required></label><label class="admin-field"><span>Email</span><input id="user-email" type="email" maxlength="190" required></label><label class="admin-field"><span>Phone</span><input id="user-phone" maxlength="40"></label><label class="admin-field"><span>Address</span><input id="user-address" maxlength="255"></label><label class="admin-field"><span>Role</span><select id="user-role">
+                        <option value="user">User</option>
+                        <option value="admin">Administrator</option>
+                    </select></label><label class="admin-field"><span>Status</span><select id="user-active">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select></label>
+                <div class="admin-upload-actions admin-field-wide"><button type="button" class="admin-btn admin-btn-ghost" id="user-modal-cancel">Cancel</button><button class="admin-btn admin-btn-primary">Save user</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="admin-toast" id="admin-toast"></div>
+    <script src="assets/admin-users.js" defer></script>
+</body>
+
+</html>

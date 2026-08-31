@@ -37,7 +37,27 @@ if ($action === 'register') {
     $address = trim((string)($data['address'] ?? ''));
     $email = strtolower(trim((string)($data['email'] ?? '')));
     $password = (string)($data['password'] ?? '');
-    if ($name === '' || $phone === '' || $address === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 6) json_response(false, 'Provide your name, phone, address, a valid email and a password of at least 6 characters.', null, 422);
+    $nameLetters = preg_match_all('/[A-Za-z]/', $name, $nameMatches);
+    if (
+        $name === '' ||
+        $nameLetters === false ||
+        $nameLetters < 3 ||
+        !preg_match('/^[A-Za-z]+(?:\s+[A-Za-z]+)*$/', $name)
+    ) {
+        json_response(false, 'Name must contain at least 3 letters and letters/spaces only.', null, 422);
+    }
+    if ($phone === '' || !preg_match('/^\d+$/', $phone) || strlen($phone) < 9) {
+        json_response(false, 'Phone number must contain at least 9 digits and numbers only.', null, 422);
+    }
+    if ($address === '' || preg_match('/^\d+$/', $address) || !preg_match('/[A-Za-z]/', $address)) {
+        json_response(false, 'Address must include letters and cannot contain numbers only.', null, 422);
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        json_response(false, 'Enter a valid email address.', null, 422);
+    }
+    if (strlen($password) < 6) {
+        json_response(false, 'Password must contain at least 6 characters.', null, 422);
+    }
     $pdo = db();
     try {
         $hash = password_hash($password, PASSWORD_DEFAULT);

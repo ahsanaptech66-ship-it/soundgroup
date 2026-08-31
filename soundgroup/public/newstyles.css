@@ -80,12 +80,11 @@ html[data-theme="obsidian"] {
   --bar-height: 2px;
   --thumb-size: 8px;
   --thumb-shadow: none;
-  /* --font-main: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; */   --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-   --ui-radius: 14px;   /* new add 86, 87, 88, 107 */
---btn-radius: 999px;  
---bar-radius: 999px;  
+  --font-main: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --ui-radius: 14px;
+  --btn-radius: 999px;
+  --bar-radius: 999px;
   --topbar-bg: rgba(0, 0, 0, 0.8);
   --bg: #000000;
   --bg-secondary: #0a0a0a;
@@ -104,7 +103,7 @@ html[data-theme="obsidian"] {
   --text-muted: var(--muted);
   --accent: #d1d4dc;
   --accent-text: #000000;
-  /* --accent2: #a0a4b0; */ --accent2: #d8db11; 
+  --accent2: #a0a4b0;
   --accent-soft: rgba(209, 212, 220, 0.15);
   --shadow: rgba(0, 0, 0, 0.8);
   --glow: color-mix(in srgb, var(--accent) 10%, transparent);
@@ -753,7 +752,7 @@ body.reduced-motion * {
 .btn.primary {
   color: var(--accent-text);
   color: var(--accent-text);
-  background: linear-gradient(135deg, var(--accent),  #7d6eff );
+  background: linear-gradient(135deg, var(--accent), #7d6eff);
   color: #08090e;
   box-shadow: 0 12px 30px rgba(155, 140, 255, .20)
 }
@@ -4284,34 +4283,6 @@ body.modal-open {
   }
 }
 
-
-/* Registration validation feedback */
-#auth-modal .field-alert {
-  display: block;
-  min-height: 0;
-  margin-top: 5px;
-  color: var(--danger, #ff6b78);
-  font-size: 10px;
-  line-height: 1.35;
-}
-
-#auth-modal .field-alert:empty {
-  display: none;
-}
-
-#auth-modal .auth-panel input.invalid {
-  border-color: var(--danger, #ff6b78);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger, #ff6b78) 16%, transparent);
-}
-
-#auth-modal .auth-panel input.invalid:focus {
-  border-color: var(--danger, #ff6b78);
-}
-
-#auth-modal .terms .field-alert {
-  margin-left: 22px;
-}
-
 /* AUTH MODAL — register/login overflow + responsive stability */
 #auth-modal {
   overflow: hidden;
@@ -5167,14 +5138,3 @@ body.sidebar-open {
     filter: blur(0);
   }
 }
-/* ========================= AUTH MODAL: HIDE MINI PLAYER WHILE OPEN ========================= */
-/*
-  The mobile player intentionally uses a higher z-index than generic modals.
-  When login/register is open, the player must not cover the auth form.
-  Keeping this rule here (after the player responsive rules) ensures it wins
-  without changing player behavior anywhere else.
-*/
-body:has(#auth-modal.open) .player {
-  display: none !important;
-}
-
