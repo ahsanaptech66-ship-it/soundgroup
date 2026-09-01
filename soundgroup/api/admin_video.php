@@ -58,8 +58,27 @@ if ($action==='list') {
 
 if ($action==='upload') {
     require_admin_video_mutation(); ensure_upload_dirs();
-    if(empty($_FILES['file'])||!is_array($_FILES['file']))json_response(false,'No video file uploaded.',null,422);
-    $file=$_FILES['file']; if(($file['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK)json_response(false,'Upload failed.',null,400);
+    if(empty($_FILES['file'])||!is_array($_FILES['file'])){
+        // If the browser sent a body but PHP dropped it, the file exceeded
+        // post_max_size and PHP clears $_POST/$_FILES before we ever see them.
+        $contentLength=(int)($_SERVER['CONTENT_LENGTH']??0);
+        if($contentLength>0 && empty($_POST)) json_response(false,'The video is larger than this server currently allows (post_max_size). Ask your host to raise upload_max_filesize/post_max_size, or upload a smaller file.',null,413);
+        json_response(false,'No video file uploaded.',null,422);
+    }
+    $file=$_FILES['file'];
+    $uploadErr=(int)($file['error']??UPLOAD_ERR_NO_FILE);
+    if($uploadErr!==UPLOAD_ERR_OK){
+        $errorMessages=[
+            UPLOAD_ERR_INI_SIZE=>'The video exceeds this server\'s upload_max_filesize setting. Ask your host to raise it or upload a smaller file.',
+            UPLOAD_ERR_FORM_SIZE=>'The video exceeds the maximum upload size allowed by the form.',
+            UPLOAD_ERR_PARTIAL=>'The video was only partially uploaded. Please try again.',
+            UPLOAD_ERR_NO_FILE=>'No video file uploaded.',
+            UPLOAD_ERR_NO_TMP_DIR=>'Server is missing a temporary folder for uploads.',
+            UPLOAD_ERR_CANT_WRITE=>'Server failed to write the uploaded video to disk.',
+            UPLOAD_ERR_EXTENSION=>'A server extension blocked this upload.',
+        ];
+        json_response(false,$errorMessages[$uploadErr]??'Upload failed.',null,$uploadErr===UPLOAD_ERR_INI_SIZE||$uploadErr===UPLOAD_ERR_FORM_SIZE?413:400);
+    }
     if((int)$file['size']>1024*1024*1024)json_response(false,'Video file exceeds the 1 GB limit.',null,413);
     $original=safe_name((string)$file['name']); $mime=video_mime((string)$file['tmp_name'],(string)($file['type']??'')); $type=video_upload_type($mime,$original);
     if($type!=='video')json_response(false,'This file is not recognized as a supported video.',null,415);
@@ -72,7 +91,7 @@ if ($action==='upload') {
     try{
         if(!empty($_FILES['artwork'])&&is_array($_FILES['artwork'])&&($_FILES['artwork']['error']??UPLOAD_ERR_NO_FILE)===UPLOAD_ERR_OK){
             $art=$_FILES['artwork']; if((int)$art['size']>10*1024*1024)throw new RuntimeException('Artwork exceeds the 10 MB limit.');
-            $am=media_upload_mime((string)$art['tmp_name'],(string)($art['type']??'')); $allowed=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];
+            $am=video_mime((string)$art['tmp_name'],(string)($art['type']??'')); $allowed=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];
             if(!isset($allowed[$am]))throw new RuntimeException('Thumbnail must be JPG, PNG, WEBP or GIF.');
             $as=bin2hex(random_bytes(12)).'.'.$allowed[$am]; $at=SG_UPLOAD_ROOT.'/images/'.$as; if(!move_uploaded_file($art['tmp_name'],$at))throw new RuntimeException('Could not store the thumbnail.'); $artworkPath='images/'.$as;
         }
@@ -92,7 +111,7 @@ if ($action==='update') {
 if ($action==='update_artwork') {
     require_admin_video_mutation(); $id=(int)($_POST['id']??0); if(!$id)json_response(false,'Invalid video id.',null,422);$pdo=db();$q=$pdo->prepare("SELECT artwork_path FROM media WHERE id=? AND type='video' LIMIT 1");$q->execute([$id]);$row=$q->fetch();if(!$row)json_response(false,'Video not found.',null,404);
     $old=$row['artwork_path']?(string)$row['artwork_path']:null;$remove=!empty($_POST['remove']);$new=null;
-    if(!$remove&&!empty($_FILES['artwork'])&&is_array($_FILES['artwork'])&&($_FILES['artwork']['error']??UPLOAD_ERR_NO_FILE)===UPLOAD_ERR_OK){$art=$_FILES['artwork'];if((int)$art['size']>10*1024*1024)json_response(false,'Thumbnail exceeds the 10 MB limit.',null,413);$am=media_upload_mime((string)$art['tmp_name'],(string)($art['type']??''));$allowed=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];if(!isset($allowed[$am]))json_response(false,'Thumbnail must be JPG, PNG, WEBP or GIF.',null,415);$as=bin2hex(random_bytes(12)).'.'.$allowed[$am];$at=SG_UPLOAD_ROOT.'/images/'.$as;if(!move_uploaded_file($art['tmp_name'],$at))json_response(false,'Could not store the thumbnail.',null,500);$new='images/'.$as;}
+    if(!$remove&&!empty($_FILES['artwork'])&&is_array($_FILES['artwork'])&&($_FILES['artwork']['error']??UPLOAD_ERR_NO_FILE)===UPLOAD_ERR_OK){$art=$_FILES['artwork'];if((int)$art['size']>10*1024*1024)json_response(false,'Thumbnail exceeds the 10 MB limit.',null,413);$am=video_mime((string)$art['tmp_name'],(string)($art['type']??''));$allowed=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];if(!isset($allowed[$am]))json_response(false,'Thumbnail must be JPG, PNG, WEBP or GIF.',null,415);$as=bin2hex(random_bytes(12)).'.'.$allowed[$am];$at=SG_UPLOAD_ROOT.'/images/'.$as;if(!move_uploaded_file($art['tmp_name'],$at))json_response(false,'Could not store the thumbnail.',null,500);$new='images/'.$as;}
     $next=$new??($remove?null:$old);try{$pdo->prepare("UPDATE media SET artwork_path=? WHERE id=? AND type='video'")->execute([$next,$id]);if($old&&($new||$remove))@unlink(SG_UPLOAD_ROOT.'/'.$old);}catch(Throwable $e){if($new)@unlink(SG_UPLOAD_ROOT.'/'.$new);json_response(false,'Could not update thumbnail.',null,500);}json_response(true,'Thumbnail updated.',['artworkPath'=>$next]);
 }
 

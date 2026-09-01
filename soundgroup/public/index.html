@@ -12,6 +12,12 @@
       name="description"
       content="SOUNDGROUP — a local-first entertainment space for music, video, discovery and your personal media library."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -1402,12 +1408,14 @@
         <button class="modal-close icon-btn" id="playlist-close">×</button
         ><span class="section-kicker">NEW COLLECTION</span>
         <h2>Create a playlist</h2>
-        <label
-          >Playlist name<input
-            id="playlist-name"
-            maxlength="180"
-            placeholder="Late night" /></label
-        ><button class="btn primary full" id="playlist-create">Create</button>
+        <div class="form-grid">
+          <label class="full-field"
+            >Playlist name<input
+              id="playlist-name"
+              maxlength="180"
+              placeholder="Late night" /></label>
+        </div>
+        <button class="btn primary full" id="playlist-create">Create</button>
       </div>
     </div>
     <div class="overlay-modal" id="playlist-detail-modal">
@@ -1430,6 +1438,20 @@
               ＋ Add music
             </button>
           </div>
+        </div>
+        <div class="playlist-detail-toolbar" id="playlist-detail-toolbar" hidden>
+          <label class="playlist-detail-select-all">
+            <input type="checkbox" id="playlist-detail-select-all" />
+            Select all
+          </label>
+          <button
+            type="button"
+            class="btn secondary small"
+            id="playlist-detail-remove-selected"
+            disabled
+          >
+            Remove selected
+          </button>
         </div>
         <div class="playlist-track-list" id="playlist-track-list"></div>
       </div>

@@ -2331,8 +2331,308 @@ body.reduced-motion * {
   padding-top: 62px
 }
 
+.playlist-detail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 4px 4px 14px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px
+}
+
+.playlist-detail-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer
+}
+
+.playlist-detail-select-all input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent)
+}
+
 .playlist-picker-modal-card {
   padding-top: 58px
+}
+
+/* ---------- Playlist detail (track list inside a playlist) ---------- */
+
+.playlist-detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px
+}
+
+.playlist-detail-head h2 {
+  margin: 6px 0 4px
+}
+
+.playlist-detail-head p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0
+}
+
+.compact-actions {
+  margin-top: 0
+}
+
+.playlist-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: min(56vh, 480px);
+  overflow-y: auto;
+  padding-right: 4px
+}
+
+.playlist-track-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius, 14px);
+  background: var(--surface);
+  transition: .15s var(--ease)
+}
+
+.playlist-track-select {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent)
+}
+
+.playlist-track-row.active {
+  border-color: var(--accent);
+  background: linear-gradient(120deg, rgba(155, 140, 255, .16), var(--surface) 65%)
+}
+
+.playlist-track-row.active .playlist-track-index {
+  color: var(--accent)
+}
+
+.playlist-now-playing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  font: 700 9px/1 Manrope, Inter, ui-sans-serif, sans-serif;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  vertical-align: middle
+}
+
+/* The rule above sets its own `display`, which — because author styles
+   always beat the browser's default user-agent styles regardless of
+   selector specificity — silently overrides the built-in behaviour of the
+   `hidden` attribute. Without this line, toggling `badge.hidden` in JS had
+   no visual effect once a badge had been shown once, which is how multiple
+   "Now playing" badges could end up stuck on at the same time. */
+.playlist-now-playing-badge[hidden] {
+  display: none
+}
+
+.playlist-track-index {
+  width: 26px;
+  flex: none;
+  text-align: center;
+  font: 700 12px Manrope, Inter, ui-sans-serif, sans-serif;
+  color: var(--muted)
+}
+
+.playlist-track-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px
+}
+
+.playlist-track-copy strong {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.playlist-track-copy small {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.playlist-track-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none
+}
+
+.playlist-track-actions .icon-btn {
+  width: 30px;
+  height: 30px;
+  font-size: 13px
+}
+
+/* ---------- Playlist picker (choose music / choose playlist) ---------- */
+
+.playlist-picker-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 4px 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px
+}
+
+.playlist-picker-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer
+}
+
+.playlist-picker-select-all input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent)
+}
+
+.playlist-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: min(56vh, 480px);
+  overflow-y: auto;
+  padding-right: 4px
+}
+
+.playlist-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius, 14px);
+  background: var(--surface);
+  transition: .15s var(--ease)
+}
+
+.playlist-picker-item:hover {
+  background: var(--surface2)
+}
+
+.playlist-picker-item:not(:disabled):active {
+  transform: scale(.99)
+}
+
+.playlist-picker-item span:nth-child(3) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px
+}
+
+.playlist-picker-item strong {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.playlist-picker-item small {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.playlist-picker-check {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: transparent;
+  font-size: 12px;
+  transition: .15s var(--ease)
+}
+
+.playlist-picker-item[data-selected="1"] .playlist-picker-check,
+.playlist-picker-item[aria-pressed="true"] .playlist-picker-check {
+  background: linear-gradient(135deg, var(--accent), #7d6eff);
+  border-color: transparent;
+  color: #08090e
+}
+
+.playlist-picker-item-action {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface2);
+  font-size: 14px;
+  color: var(--muted)
+}
+
+.playlist-picker-icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--surface2);
+  font-size: 14px
+}
+
+.playlist-picker-empty {
+  grid-column: 1/-1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 40px 20px;
+  border: 1px dashed var(--line);
+  border-radius: var(--ui-radius, 18px)
+}
+
+.playlist-picker-empty strong {
+  font-size: 15px
+}
+
+.playlist-picker-empty small {
+  color: var(--muted);
+  max-width: 380px;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 6px
 }
 
 .video-title-overlay {
@@ -3895,12 +4195,53 @@ body.reduced-motion * {
     padding: 18px
   }
 
+  /* The generic mobile padding reset above (higher specificity than the
+     single-class rules that give these two modals extra top clearance for
+     their absolutely-positioned × button) was wiping that clearance out on
+     small screens, letting the header buttons render underneath/behind the
+     close button. Restore it here with matching specificity. */
+  .overlay-modal .modal-card.playlist-detail-modal-card {
+    padding-top: 54px
+  }
+
+  .overlay-modal .modal-card.playlist-picker-modal-card {
+    padding-top: 50px
+  }
+
   .review-section #media-review-list {
     max-height: 32vh
   }
 
   .detail-community {
     gap: 12px
+  }
+
+  .playlist-detail-head {
+    padding-right: 40px
+  }
+
+  .playlist-track-row {
+    gap: 8px;
+    padding: 8px 10px
+  }
+
+  .playlist-track-index {
+    display: none
+  }
+
+  .playlist-track-actions {
+    gap: 4px
+  }
+
+  .playlist-track-actions .icon-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 11px
+  }
+
+  .playlist-track-actions .btn.secondary.small {
+    padding: 6px 10px;
+    font-size: 11px
   }
 }
 

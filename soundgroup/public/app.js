@@ -1305,6 +1305,52 @@
       setView("discover"),
     );
   }
+  // Tracks which playlist-detail rows are checked for bulk removal. Cleared
+  // whenever a different playlist is opened; survives a re-render of the
+  // same playlist (e.g. after a reorder) so mid-selection actions don't
+  // silently lose the user's checkboxes.
+  let playlistDetailSelected = new Set();
+  function syncPlaylistDetailActiveTrack() {
+    // No "is the modal open" gate here on purpose: state.current can change
+    // (next/prev, ended, queue clicks) while this modal is closed, and if we
+    // skip updating the DOM then, the list shows whatever was true when it
+    // was last open — stale rows stay marked "now playing" even after the
+    // real current track moved on. Always keeping the DOM in sync with
+    // state.current, even while hidden, means whenever the modal is shown
+    // again it is already correct — no separate "catch up" step needed.
+    const list = $("#playlist-track-list");
+    if (!list) return;
+    const activeId = state.current ? String(state.current.id) : null;
+    list.querySelectorAll(".playlist-track-row").forEach((row) => {
+      const isActive = Boolean(activeId) && row.dataset.mediaId === activeId;
+      row.classList.toggle("active", isActive);
+      const badge = row.querySelector(".playlist-now-playing-badge");
+      if (badge) badge.hidden = !isActive;
+    });
+  }
+  function updatePlaylistDetailToolbar() {
+    const items = $$("#playlist-track-list .playlist-track-row").map(
+      (r) => r.dataset.mediaId,
+    );
+    playlistDetailSelected.forEach(
+      (id) => !items.includes(id) && playlistDetailSelected.delete(id),
+    );
+    const selectAll = $("#playlist-detail-select-all");
+    const removeBtn = $("#playlist-detail-remove-selected");
+    if (selectAll) {
+      selectAll.checked =
+        items.length > 0 && playlistDetailSelected.size === items.length;
+      selectAll.indeterminate =
+        playlistDetailSelected.size > 0 &&
+        playlistDetailSelected.size < items.length;
+    }
+    if (removeBtn) {
+      removeBtn.disabled = playlistDetailSelected.size === 0;
+      removeBtn.textContent = playlistDetailSelected.size
+        ? `Remove selected (${playlistDetailSelected.size})`
+        : "Remove selected";
+    }
+  }
   function renderPlaylistDetail() {
     const pid = $("#playlist-detail-modal").dataset.playlistId;
     const p = playlistById(pid);
@@ -1319,12 +1365,15 @@
       $("#playlist-play-all").disabled = !items.some(
         (id) => mediaById(id)?.type === "audio",
       );
+    const toolbar = $("#playlist-detail-toolbar");
+    if (toolbar) toolbar.hidden = items.length === 0;
     if ($("#playlist-track-list"))
       $("#playlist-track-list").innerHTML = items.length
         ? items
             .map((id, index) => {
               const m = mediaById(id);
-              return `<div class="playlist-track-row"><div class="playlist-track-index">${String(index + 1).padStart(2, "0")}</div><div class="playlist-track-copy"><strong>${esc(m?.title || "Missing media")}</strong><small>${esc(m?.artist || "Unknown artist")} · ${m?.type === "audio" ? "Audio" : "Unavailable"}</small></div><div class="playlist-track-actions"><button class="icon-btn" data-playlist-up="${esc(id)}" ${index === 0 ? "disabled" : ""} aria-label="Move up">↑</button><button class="icon-btn" data-playlist-down="${esc(id)}" ${index === items.length - 1 ? "disabled" : ""} aria-label="Move down">↓</button><button class="icon-btn" data-playlist-remove="${esc(id)}" aria-label="Remove track">×</button><button class="btn secondary small" data-playlist-track-play="${esc(id)}" ${m?.type !== "audio" ? "disabled" : ""}>Play</button></div></div>`;
+              const checked = playlistDetailSelected.has(id) ? "checked" : "";
+              return `<div class="playlist-track-row" data-media-id="${esc(id)}"><input type="checkbox" class="playlist-track-select" data-playlist-select="${esc(id)}" ${checked} aria-label="Select track" /><div class="playlist-track-index">${String(index + 1).padStart(2, "0")}</div><div class="playlist-track-copy"><strong>${esc(m?.title || "Missing media")}<span class="playlist-now-playing-badge" hidden>▶ Now playing</span></strong><small>${esc(m?.artist || "Unknown artist")} · ${m?.type === "audio" ? "Audio" : "Unavailable"}</small></div><div class="playlist-track-actions"><button class="icon-btn" data-playlist-up="${esc(id)}" ${index === 0 ? "disabled" : ""} aria-label="Move up">↑</button><button class="icon-btn" data-playlist-down="${esc(id)}" ${index === items.length - 1 ? "disabled" : ""} aria-label="Move down">↓</button><button class="icon-btn" data-playlist-remove="${esc(id)}" aria-label="Remove track">×</button><button class="btn secondary small" data-playlist-track-play="${esc(id)}" ${m?.type !== "audio" ? "disabled" : ""}>Play</button></div></div>`;
             })
             .join("")
         : `<div class="empty-state"><div><div class="empty-icon">♫</div><h3>This playlist is empty</h3><p>Add music from My Media to build the playlist.</p><button class="btn primary small" id="empty-detail-add">Add music</button></div></div>`;
@@ -1345,16 +1394,67 @@
     );
     $$("#playlist-track-list [data-playlist-track-play]").forEach((b) =>
       b.addEventListener("click", () => {
-        const m = mediaById(b.dataset.playlistTrack);
-        if (m?.type === "audio") loadAudio(m, true);
+        const m = mediaById(b.dataset.playlistTrackPlay);
+        if (m?.type !== "audio") return;
+        // Playing any track from inside a playlist makes the WHOLE playlist
+        // the active queue (in its current order) so next/prev — and the
+        // mini-player's queue panel — browse this playlist, not whatever
+        // was playing before. Same behaviour "Play all" already had.
+        const audioItems = items
+          .map((id) => mediaById(id))
+          .filter((x) => x?.type === "audio");
+        state.queue = audioItems;
+        state.queueIndex = Math.max(
+          0,
+          audioItems.findIndex((x) => String(x.id) === String(m.id)),
+        );
+        // Playing a specific track from a playlist is a deliberate choice —
+        // always start it from the beginning, never resume a stale position
+        // from unrelated listening history.
+        loadAudio(m, true, { resume: false });
       }),
     );
+    $$("#playlist-track-list [data-playlist-select]").forEach((cb) =>
+      cb.addEventListener("change", () => {
+        const id = String(cb.dataset.playlistSelect);
+        if (cb.checked) playlistDetailSelected.add(id);
+        else playlistDetailSelected.delete(id);
+        updatePlaylistDetailToolbar();
+      }),
+    );
+    const detailSelectAll = $("#playlist-detail-select-all");
+    if (detailSelectAll) {
+      const freshSelectAll = detailSelectAll.cloneNode(true);
+      detailSelectAll.replaceWith(freshSelectAll);
+      freshSelectAll.addEventListener("change", (e) => {
+        const checked = Boolean(e.target.checked);
+        $$("#playlist-track-list [data-playlist-select]").forEach((cb) => {
+          cb.checked = checked;
+          const id = String(cb.dataset.playlistSelect);
+          if (checked) playlistDetailSelected.add(id);
+          else playlistDetailSelected.delete(id);
+        });
+        updatePlaylistDetailToolbar();
+      });
+    }
+    const detailRemoveSelected = $("#playlist-detail-remove-selected");
+    if (detailRemoveSelected) {
+      const freshRemoveSelected = detailRemoveSelected.cloneNode(true);
+      detailRemoveSelected.replaceWith(freshRemoveSelected);
+      freshRemoveSelected.addEventListener("click", () =>
+        removeSelectedPlaylistTracks(pid),
+      );
+    }
+    updatePlaylistDetailToolbar();
+    syncPlaylistDetailActiveTrack();
     $("#empty-detail-add")?.addEventListener("click", () =>
       openPlaylistTrackPicker(pid),
     );
   }
   function openPlaylistDetail(pid) {
     if (!playlistById(pid)) return;
+    if ($("#playlist-detail-modal").dataset.playlistId !== String(pid))
+      playlistDetailSelected.clear();
     $("#playlist-detail-modal").dataset.playlistId = String(pid);
     renderPlaylistDetail();
     $("#playlist-detail-modal")?.classList.add("open");
@@ -1407,11 +1507,51 @@
       await api.playlists("remove", { playlistId: pid, mediaId });
       const p = playlistById(pid);
       if (p) p.items = p.items.filter((x) => String(x) !== String(mediaId));
+      playlistDetailSelected.delete(String(mediaId));
       renderPlaylistDetail();
+      // The playlist grid's "N items" count needs to reflect this removal
+      // immediately, not just the detail view — this was left stale before.
+      renderPlaylists();
       toast("Track removed from playlist");
     } catch (e) {
       toast(e.message);
     }
+  }
+  async function removeSelectedPlaylistTracks(pid) {
+    const ids = Array.from(playlistDetailSelected);
+    if (!ids.length) {
+      toast("Select at least one track.");
+      return;
+    }
+    if (
+      !confirm(
+        `Remove ${ids.length} track${ids.length === 1 ? "" : "s"} from this playlist?`,
+      )
+    )
+      return;
+    const p = playlistById(pid);
+    if (!p) return;
+    let removed = 0;
+    const failed = [];
+    for (const mediaId of ids) {
+      try {
+        await api.playlists("remove", { playlistId: pid, mediaId });
+        p.items = p.items.filter((x) => String(x) !== String(mediaId));
+        playlistDetailSelected.delete(String(mediaId));
+        removed++;
+      } catch (e) {
+        failed.push({ mediaId, message: e.message });
+      }
+    }
+    renderPlaylistDetail();
+    renderPlaylists();
+    if (removed && failed.length)
+      toast(
+        `${removed} track${removed === 1 ? "" : "s"} removed; ${failed.length} failed.`,
+      );
+    else if (removed)
+      toast(`${removed} track${removed === 1 ? "" : "s"} removed from playlist.`);
+    else if (failed.length) toast(failed[0].message);
   }
   function updatePlaylistPickerSelectionState() {
     const items = $$("#playlist-picker-list [data-playlist-picker-media]");
@@ -1467,17 +1607,35 @@
         updatePlaylistPickerSelectionState();
       }),
     );
-    $("#playlist-picker-select-all")?.addEventListener("change", (e) => {
-      const checked = Boolean(e.target.checked);
-      $$("#playlist-picker-list [data-playlist-picker-media]").forEach((b) => {
-        b.dataset.selected = checked ? "1" : "0";
-        b.setAttribute("aria-pressed", checked ? "true" : "false");
+    // These toolbar controls live in static HTML (not re-created on every
+    // open), so re-binding with addEventListener each time this function runs
+    // would stack duplicate listeners and fire the handler multiple times per
+    // click. Clone-and-replace strips any previously attached listeners
+    // before we attach a fresh one.
+    const selectAllInput = $("#playlist-picker-select-all");
+    if (selectAllInput) {
+      const freshSelectAll = selectAllInput.cloneNode(true);
+      selectAllInput.replaceWith(freshSelectAll);
+      freshSelectAll.checked = false;
+      freshSelectAll.addEventListener("change", (e) => {
+        const checked = Boolean(e.target.checked);
+        $$("#playlist-picker-list [data-playlist-picker-media]").forEach(
+          (b) => {
+            b.dataset.selected = checked ? "1" : "0";
+            b.setAttribute("aria-pressed", checked ? "true" : "false");
+          },
+        );
+        updatePlaylistPickerSelectionState();
       });
-      updatePlaylistPickerSelectionState();
-    });
-    $("#playlist-picker-add-selected")?.addEventListener("click", () =>
-      addSelectedTracksFromPicker(pid),
-    );
+    }
+    const addSelectedBtn = $("#playlist-picker-add-selected");
+    if (addSelectedBtn) {
+      const freshAddSelected = addSelectedBtn.cloneNode(true);
+      addSelectedBtn.replaceWith(freshAddSelected);
+      freshAddSelected.addEventListener("click", () =>
+        addSelectedTracksFromPicker(pid),
+      );
+    }
     $("#playlist-picker-go-media")?.addEventListener("click", () => {
       $("#playlist-picker-modal")?.classList.remove("open");
       setView("media");
@@ -2303,8 +2461,9 @@
       $("#full-art").style.background =
         `linear-gradient(145deg,${mediaTone(m)},var(--bg) 72%)`;
   }
-  function loadAudio(m, autoplay = false) {
+  function loadAudio(m, autoplay = false, options = {}) {
     if (!m || m.type !== "audio") return;
+    const resume = options.resume !== false;
     ensureAudioGraph();
     if (audioCtx && audioCtx.state === "suspended")
       audioCtx.resume().catch(() => {});
@@ -2334,7 +2493,7 @@
     audio.volume = state.volume;
     audio.muted = state.muted;
     setTimelinePlaybackState({ hasTrack: true, playing: false });
-    const h = state.history.find((x) => x.id === m.id);
+    const h = resume ? state.history.find((x) => x.id === m.id) : null;
     const knownDuration = Number(m.duration || h?.duration || 0);
     const startTime = h?.current
       ? Math.min(h.current, Math.max(0, knownDuration - 0.1))
@@ -2359,6 +2518,10 @@
         [m.album, m.genre].filter(Boolean).join(" • ") ||
         "Imported local media";
     updateVolumeUI();
+    // Keep the playlist-detail track list (if open) showing which track is
+    // now active, regardless of whether this load came from a playlist row,
+    // "Play all", next/prev, or the queue panel.
+    syncPlaylistDetailActiveTrack();
     if (autoplay) audio.play().catch(() => {});
   }
   audio.addEventListener("play", () => {
@@ -2411,7 +2574,10 @@
   function nextTrack() {
     if (!state.queue.length) return;
     state.queueIndex = (state.queueIndex + 1) % state.queue.length;
-    loadAudio(state.queue[state.queueIndex], true);
+    // Advancing to the next track in a queue always starts it from the
+    // beginning — resuming a stale saved position here is what made
+    // playlist playback jump back into an old paused spot.
+    loadAudio(state.queue[state.queueIndex], true, { resume: false });
   }
   function prevTrack() {
     if (audio.currentTime > 4) {
@@ -2421,7 +2587,7 @@
     if (!state.queue.length) return;
     state.queueIndex =
       (state.queueIndex - 1 + state.queue.length) % state.queue.length;
-    loadAudio(state.queue[state.queueIndex], true);
+    loadAudio(state.queue[state.queueIndex], true, { resume: false });
   }
   function updateVolumeUI() {
     audio.volume = state.volume;
@@ -2494,7 +2660,7 @@
     $$("#queue-list [data-q]").forEach((b) =>
       b.addEventListener("click", () => {
         state.queueIndex = Number(b.dataset.q);
-        loadAudio(state.queue[state.queueIndex], true);
+        loadAudio(state.queue[state.queueIndex], true, { resume: false });
       }),
     );
   }
@@ -2624,6 +2790,11 @@
       $("#playlist-picker-kicker").textContent = "ADD TO PLAYLIST";
     if ($("#playlist-picker-title"))
       $("#playlist-picker-title").textContent = "Choose a playlist";
+    // This mode picks a single playlist by tapping its row — the multi-select
+    // toolbar belongs to the "add tracks to a playlist" mode only, so make
+    // sure a leftover toolbar from that mode doesn't stay visible here.
+    const pickerToolbar = $("#playlist-picker-toolbar");
+    if (pickerToolbar) pickerToolbar.hidden = true;
     const existingId = new Set(
       state.playlists
         .filter((p) =>
@@ -2680,7 +2851,9 @@
     }
     state.queue = list;
     state.queueIndex = 0;
-    loadAudio(list[0], true);
+    // "Play all" starts a fresh playthrough from track 1 — never resume a
+    // stale saved position from earlier, unrelated listening.
+    loadAudio(list[0], true, { resume: false });
   }
   async function openEditMedia(mediaId) {
     const m = mediaById(mediaId);
@@ -3148,8 +3321,35 @@
         closeVideo();
         closeFullPlayer();
         $("#command-overlay")?.classList.remove("open");
-        $(".overlay-modal.open")?.classList.remove("open");
+        // Close every open overlay modal, not just the first one in the DOM —
+        // otherwise a stacked second modal could stay open after Escape.
+        $$(".overlay-modal.open").forEach((m) => m.classList.remove("open"));
       }
+    });
+  }
+  // Clicking the dimmed backdrop area of any overlay modal closes it, same
+  // as tapping its own × button. Without this, a modal opened on top of a
+  // page (e.g. Add music / playlist detail) can only be dismissed via its
+  // close button, which reads as "the popup won't go away" if that's missed.
+  function setupOverlayModals() {
+    $$(".overlay-modal").forEach((overlay) => {
+      overlay.addEventListener("click", (e) => {
+        if (e.target !== overlay) return;
+        // video-modal needs its player paused and state cleared, not just
+        // hidden, so route it through the same close path as its × button.
+        if (overlay.id === "video-modal") {
+          closeVideo();
+          return;
+        }
+        overlay.classList.remove("open");
+        // media-detail-modal tracks extra open state (aria-hidden + a body
+        // class that locks page scroll) that the plain "open" class doesn't
+        // cover, so mirror its dedicated close button's cleanup here too.
+        if (overlay.id === "media-detail-modal") {
+          overlay.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+        }
+      });
     });
   }
   function renderCommands(q) {
@@ -3675,6 +3875,7 @@
     setupVideo();
     setupSearch();
     setupCommand();
+    setupOverlayModals();
     setupSettings();
     setupAuth();
     updateFavCount();
